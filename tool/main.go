@@ -2,9 +2,11 @@ package main
 
 import (
 	"encoding/hex"
+	"fmt"
 	"github.com/google/gousb"
 	"github.com/spotlightishere/qcomlib"
 	"log"
+	"time"
 )
 
 func main() {
@@ -53,5 +55,22 @@ func main() {
 		log.Println("Hi device!")
 	}
 
-	log.Println(hex.EncodeToString(data))
+	array := []string{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"}
+	for _, digit := range array {
+		pin := fmt.Sprintf("%s00000", digit)
+
+		start := time.Now()
+
+		response, err := device.SendSPC(pin)
+		if err != nil {
+			panic(err)
+		}
+
+		end := time.Now()
+		elapsed := end.Sub(start)
+		log.Println(elapsed)
+		log.Println(hex.EncodeToString(response))
+
+		time.Sleep(10 * time.Second)
+	}
 }
